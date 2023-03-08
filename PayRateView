@@ -1,0 +1,33 @@
+import SwiftUI
+
+struct PayRateView: View {
+    var depts: [DeptList] = DeptList.deptList
+
+    var body: some View {
+        List {
+            ForEach(depts, id: \.deptName) { dept in
+                if dept.deptName == "Management Departments" {
+                    NavigationLink(destination: ManagementDepartmentsView(dept: dept)) {
+                        Text(dept.deptName)
+                            .bold()
+                            .font(.headline)
+                    }
+                } else {
+                    NavigationLink(destination: RateCardView(dept: dept)) {
+                        Text(dept.deptName)
+                            .bold()
+                            .font(.headline)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Department Rates")
+    }
+}
+  
+struct PayRateView_Previews: PreviewProvider {
+    static var previews: some View {
+        PayRateView(
+            depts: DeptList.deptList)
+    }
+}
