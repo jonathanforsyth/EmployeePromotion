@@ -1,0 +1,38 @@
+import SwiftUI
+
+struct ManagementDepartmentsView: View {
+    var dept: DeptList
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        List {
+            Section(header: Text("Management")
+                .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                .font(.body)
+                .bold())
+            {
+                ForEach(dept.subDept[0].rates) { rate in
+                    HStack {
+                        Text("Year \(rate.year)")
+                        Spacer()
+                        Text("$ \(rate.hourlyRate, specifier: "%.2f")")
+                    }
+                }
+            }
+            Section(header: Text("Senior Management")
+                .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                .font(.body)
+                .bold())
+            {
+                ForEach(dept.subDept[1].rates) { rate in
+                    HStack {
+                        Text("Year \(rate.year)")
+                        Spacer()
+                        Text("$ \(rate.hourlyRate, specifier: "%.2f")")
+                    }
+                }
+            }
+        }
+        .navigationTitle("Management Rates")
+    }
+}
