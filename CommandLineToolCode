@@ -1,0 +1,193 @@
+import Foundation
+
+enum Calculations {
+    private static let pennyRoundingBehavior = NSDecimalNumberHandler(
+        roundingMode: .bankers,
+        scale: 2,
+        raiseOnExactness: false,
+        raiseOnOverflow: true,
+        raiseOnUnderflow: true,
+        raiseOnDivideByZero: true
+    )
+    static func computeMonthlyEarnings(hours hoursWorked: Int, atPayRate payRate: Int) -> Decimal {
+        let base = Decimal(hoursWorked * payRate) as NSDecimalNumber
+        return base.rounding(accordingToBehavior: pennyRoundingBehavior) as Decimal
+    }
+}
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
+}
+enum Department: RawRepresentable {
+    case sales
+    case management
+    case seniorManagement
+    case other(String)
+
+    init?(rawValue: String) {
+        switch rawValue {
+        case "Sales": self = .sales
+        case "Management": self = .management
+        case "Senior Management": self = .seniorManagement
+        case let dept: self = .other(dept)
+        }
+    }
+    var rawValue: String {
+        switch self {
+        case .sales: return "Sales"
+        case .management: return "Management"
+        case .seniorManagement: return "Senior Management"
+        case .other(let dept): return dept
+        }
+    }
+    func payRate(forYearsWorked numberOfYears: Int) -> Int {
+        let rates: [Int]
+        switch self {
+        case .sales: rates = [20,22,24,26,28,30,32,34,36,38,40]
+        case .management: rates = [30,32,34,36,38,40,42,44,46,48,50]
+        case .seniorManagement: rates = [40,42,44,46,48,50,52,54,56,58,60]
+        default: rates = [10,12,14,16,18,20,22,24,26,28,30]
+        }
+        return rates[min(numberOfYears, rates.count) - 1]
+    }
+}
+
+struct Employee {
+    let name: String
+    var birthdate: Date
+    var hiredate: Date
+    var retirementAge: Int
+    var department: Department
+    var monthlyHoursWorked: Int
+    var regularPayRateIncreases: Bool
+    var regularPayRateIncreasePercentage: Int
+    var regularPayRateIncreaseYearInterval: Int
+
+    private(set) var employmentHistory: [Department]
+    
+    init(_ name: String,
+         birthdate: Date,
+         hiredate: Date,
+         retirementAge: Int,
+         department: Department = .other("Employee"),
+         monthlyHoursWorked: Int,
+         regularPayRateIncreases: Bool,
+         regularPayRateIncreasePercentage: Int,
+         regularPayRateIncreaseYearInterval: Int)
+    {
+        self.name = name
+        self.birthdate = birthdate
+        self.hiredate = hiredate
+        self.retirementAge = retirementAge
+        self.department = department
+        self.monthlyHoursWorked = monthlyHoursWorked
+        self.regularPayRateIncreases = regularPayRateIncreases
+        self.regularPayRateIncreasePercentage = regularPayRateIncreasePercentage
+        self.regularPayRateIncreaseYearInterval = regularPayRateIncreaseYearInterval
+        self.employmentHistory = []
+    }
+}
+extension Employee {
+    mutating func promote(to newDepartment: Department) {
+        department = newDepartment
+    }
+    mutating func work(months: Int) {
+        employmentHistory
+            .append(contentsOf: Array.init(repeating: department,
+                                           count: months))
+    }
+    mutating func work(years: Int) {
+        work(months: years * 12)
+    }
+    mutating func work(years: Int, months: Int) {
+        work(months: years * 12 + months)
+    }
+    func yearlyEarnings() -> [Decimal] {
+        let years = employmentHistory.chunked(into: 12)
+        var earnings: [Decimal] = []
+        for (index, months) in years.enumerated() {
+            let yearEarnings: Decimal = months.reduce(0) { runningTotal, dept in
+                let payRate = dept.payRate(forYearsWorked: index + 1)
+                let monthlyEarnings = Calculations.computeMonthlyEarnings(
+                    hours: monthlyHoursWorked,
+                    atPayRate: payRate
+                )
+                return runningTotal + monthlyEarnings
+            }
+            earnings.append(yearEarnings)
+        }
+        return earnings
+    }
+}
+extension Employee {
+    func yearlyDepartments() -> [String] {
+        let years = employmentHistory.chunked(into: 12)
+        let departments: [String] = years.map { months in
+            var seenDepts: Set<String> = []
+            return months.reduce(into: [String]()) { acc, dept in
+                if seenDepts.insert(dept.rawValue).inserted {
+                    acc.append(dept.rawValue)
+                }
+            }.joined(separator: ",")
+        }
+        return departments
+    }
+    func yearlyDepartmentsEarnings() -> [(String, Decimal)] {
+        let yearlyDepartments = yearlyDepartments()
+        let yearlyEarnings = yearlyEarnings()
+        let yearlyDepartmentsEarnings: [(departments: String, earnings: Decimal)] =
+        Array(zip(yearlyDepartments, yearlyEarnings))
+        return yearlyDepartmentsEarnings
+    }
+}
+var birthdate = DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!
+var hiredate = DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!
+var promotion1date = DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!
+var firstDeptMonths: Int { Calendar.current.dateComponents([.month], from: hiredate, to: promotion1date).month! }
+var promotion2date = DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!
+var secondDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion1date, to: promotion2date).month! }
+var promotion3date = DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!
+var thirdDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion2date, to: promotion3date).month! }
+var retireAge = 65
+let retireDate = Calendar.current.date(byAdding: .year, value: retireAge, to: birthdate)!
+var fourthDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion3date, to: retireDate).month! }
+
+extension Date {
+    var age: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! }
+    var yearGroup: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! + 1}
+    var totalYearsRemaining: Int { Calendar.current.dateComponents([.year], from: self, to: retireDate).year! }
+    var totalMonthsRemaining: Int { Calendar.current.dateComponents([.month], from: self, to: retireDate).month! }
+}
+//age of employee
+let age = birthdate.age
+//number of years employee has worked for the company
+let yearGroup = hiredate.yearGroup
+
+func printYearlyDepartmentsAndEarnings(_ yearlyDeptsAndEarnings: [(departments: String, earnings: Decimal)]) {
+    for (year, deptsAndEarnings) in yearlyDeptsAndEarnings.enumerated() {
+        print("Department(s) for Year \(year + yearGroup + 1): \(deptsAndEarnings.departments)")
+        print("Earnings for Year \(year + yearGroup + 1): \(deptsAndEarnings.earnings)")
+        print("Age: \(year + age)")
+        print("")
+    }
+}
+var charlotte = Employee("Charlotte Grote", birthdate: birthdate, hiredate: hiredate, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
+//give our employee some work history
+//months in Hospitality
+charlotte.work(months: firstDeptMonths)
+//ohh, a promotion!
+charlotte.promote(to: .sales)
+//months in Sales
+charlotte.work(months: secondDeptMonths)
+//another promotion. way to go, Charlotte!
+charlotte.promote(to: .management)
+//months in Management
+charlotte.work(months: thirdDeptMonths)
+//another promotion. way to go, Charlotte!
+charlotte.promote(to: .seniorManagement)
+//months in Senior Management
+charlotte.work(months: fourthDeptMonths)
+printYearlyDepartmentsAndEarnings(charlotte.yearlyDepartmentsEarnings())
