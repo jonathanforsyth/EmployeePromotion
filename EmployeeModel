@@ -1,0 +1,286 @@
+import Foundation
+
+struct DeptPayRates {
+    let sales: [Double] =
+    [20,22,24,26,28,30,32,34,36,38,40]
+    let management: [Double] =
+    [30,32,34,36,38,40,42,44,46,48,50]
+    let seniorManagement: [Double] =
+    [40,42,44,46,48,50,52,54,56,58,60]
+    let other: [Double] =
+    [10,12,14,16,18,20,22,24,26,28,30]
+}
+
+struct YearlyRates: Identifiable {
+    let id: UUID
+    var year: Int
+    var hourlyRate: Double
+    
+    init(id: UUID = UUID(), year: Int, hourlyRate: Double) {
+        self.id = id
+        self.year = year
+        self.hourlyRate = hourlyRate
+    }
+}
+
+struct DeptList: Identifiable {
+    let id: UUID
+    var deptName: String
+    var rates: [YearlyRates]
+    var subDept: [DeptList]
+
+    init(id: UUID = UUID(), deptName: String, rates: [YearlyRates], subDept: [DeptList]) {
+        self.id = id
+        self.deptName = deptName
+        self.rates = rates
+        self.subDept = subDept
+    }
+}
+
+extension DeptList {
+    static let deptList: [DeptList] = [
+    DeptList(deptName: "Sales", rates: [
+        YearlyRates(year: 1, hourlyRate:
+            DeptPayRates().sales[0]),
+        YearlyRates(year: 2, hourlyRate:
+            DeptPayRates().sales[1]),
+        YearlyRates(year: 3, hourlyRate:
+            DeptPayRates().sales[2]),
+        YearlyRates(year: 4, hourlyRate:
+            DeptPayRates().sales[3]),
+        YearlyRates(year: 5, hourlyRate:
+            DeptPayRates().sales[4]),
+        YearlyRates(year: 6, hourlyRate:
+            DeptPayRates().sales[5]),
+        YearlyRates(year: 7, hourlyRate:
+            DeptPayRates().sales[6]),
+        YearlyRates(year: 8, hourlyRate:
+            DeptPayRates().sales[7]),
+        YearlyRates(year: 9, hourlyRate:
+            DeptPayRates().sales[8]),
+        YearlyRates(year: 10, hourlyRate:
+            DeptPayRates().sales[9]),
+        YearlyRates(year: 11, hourlyRate:
+            DeptPayRates().sales[10])], subDept: []),
+    DeptList(deptName: "Management Departments", rates: [], subDept: [
+        DeptList(deptName: "Management", rates: [
+                    YearlyRates(year: 1, hourlyRate:
+                                    DeptPayRates().management[0]),
+                    YearlyRates(year: 2, hourlyRate:
+                                    DeptPayRates().management[1]),
+                    YearlyRates(year: 3, hourlyRate:
+                                    DeptPayRates().management[2]),
+                    YearlyRates(year: 4, hourlyRate:
+                                    DeptPayRates().management[3]),
+                    YearlyRates(year: 5, hourlyRate:
+                                    DeptPayRates().management[4]),
+                    YearlyRates(year: 6, hourlyRate:
+                                    DeptPayRates().management[5]),
+                    YearlyRates(year: 7, hourlyRate:
+                                    DeptPayRates().management[6]),
+                    YearlyRates(year: 8, hourlyRate:
+                                    DeptPayRates().management[7]),
+                    YearlyRates(year: 9, hourlyRate:
+                                    DeptPayRates().management[8]),
+                    YearlyRates(year: 10, hourlyRate:
+                                    DeptPayRates().management[9]),
+                    YearlyRates(year: 11, hourlyRate:
+                                    DeptPayRates().management[10])], subDept: []),
+        DeptList(deptName: "Senior Management", rates: [
+                    YearlyRates(year: 1, hourlyRate:
+                                    DeptPayRates().seniorManagement[0]),
+                    YearlyRates(year: 2, hourlyRate:
+                                    DeptPayRates().seniorManagement[1]),
+                    YearlyRates(year: 3, hourlyRate:
+                                    DeptPayRates().seniorManagement[2]),
+                    YearlyRates(year: 4, hourlyRate:
+                                    DeptPayRates().seniorManagement[3]),
+                    YearlyRates(year: 5, hourlyRate:
+                                    DeptPayRates().seniorManagement[4]),
+                    YearlyRates(year: 6, hourlyRate:
+                                    DeptPayRates().seniorManagement[5]),
+                    YearlyRates(year: 7, hourlyRate:
+                                    DeptPayRates().seniorManagement[6]),
+                    YearlyRates(year: 8, hourlyRate:
+                                    DeptPayRates().seniorManagement[7]),
+                    YearlyRates(year: 9, hourlyRate:
+                                    DeptPayRates().seniorManagement[8]),
+                    YearlyRates(year: 10, hourlyRate:
+                                    DeptPayRates().seniorManagement[9]),
+                    YearlyRates(year: 11, hourlyRate:
+                                    DeptPayRates().seniorManagement[10])], subDept: [])]),
+    DeptList(deptName: "Hospitality", rates: [
+        YearlyRates(year: 1, hourlyRate:
+            DeptPayRates().other[0]),
+        YearlyRates(year: 2, hourlyRate:
+            DeptPayRates().other[1]),
+        YearlyRates(year: 3, hourlyRate:
+            DeptPayRates().other[2]),
+        YearlyRates(year: 4, hourlyRate:
+            DeptPayRates().other[3]),
+        YearlyRates(year: 5, hourlyRate:
+            DeptPayRates().other[4]),
+        YearlyRates(year: 6, hourlyRate:
+            DeptPayRates().other[5]),
+        YearlyRates(year: 7, hourlyRate:
+            DeptPayRates().other[6]),
+        YearlyRates(year: 8, hourlyRate:
+            DeptPayRates().other[7]),
+        YearlyRates(year: 9, hourlyRate:
+            DeptPayRates().other[8]),
+        YearlyRates(year: 10, hourlyRate:
+            DeptPayRates().other[9]),
+        YearlyRates(year: 11, hourlyRate:
+            DeptPayRates().other[10])], subDept: [])
+    ]
+}
+extension Department: Hashable {
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .sales:
+            hasher.combine("Sales")
+        case .management:
+            hasher.combine("Management")
+        case .seniorManagement:
+            hasher.combine("Senior Management")
+        case .other(let value):
+            hasher.combine(value)
+        }
+    }
+}
+enum Department: RawRepresentable {
+    case sales
+    case management
+    case seniorManagement
+    case other(String)
+
+    init?(rawValue: String) {
+        switch rawValue {
+        case "Sales": self = .sales
+        case "Management": self = .management
+        case "Senior Management": self = .seniorManagement
+        case let dept: self = .other(dept)
+        }
+    }
+    var rawValue: String {
+        switch self {
+        case .sales: return "Sales"
+        case .management: return "Management"
+        case .seniorManagement: return "Senior Management"
+        case .other(let dept): return dept
+        }
+    }
+    func payRate(forYearsWorked numberOfYears: Int) -> Double {
+        let rates: [Double]
+        switch self {
+        case .sales: rates = [
+            DeptPayRates().sales[0],
+            DeptPayRates().sales[1],
+            DeptPayRates().sales[2],
+            DeptPayRates().sales[3],
+            DeptPayRates().sales[4],
+            DeptPayRates().sales[5],
+            DeptPayRates().sales[6],
+            DeptPayRates().sales[7],
+            DeptPayRates().sales[8],
+            DeptPayRates().sales[9],
+            DeptPayRates().sales[10]]
+        case .management: rates = [
+            DeptPayRates().management[0],
+            DeptPayRates().management[1],
+            DeptPayRates().management[2],
+            DeptPayRates().management[3],
+            DeptPayRates().management[4],
+            DeptPayRates().management[5],
+            DeptPayRates().management[6],
+            DeptPayRates().management[7],
+            DeptPayRates().management[8],
+            DeptPayRates().management[9],
+            DeptPayRates().management[10]]
+        case .seniorManagement: rates = [
+            DeptPayRates().seniorManagement[0],
+            DeptPayRates().seniorManagement[1],
+            DeptPayRates().seniorManagement[2],
+            DeptPayRates().seniorManagement[3],
+            DeptPayRates().seniorManagement[4],
+            DeptPayRates().seniorManagement[5],
+            DeptPayRates().seniorManagement[6],
+            DeptPayRates().seniorManagement[7],
+            DeptPayRates().seniorManagement[8],
+            DeptPayRates().seniorManagement[9],
+            DeptPayRates().seniorManagement[10]]
+        default: rates = [
+            DeptPayRates().other[0],
+            DeptPayRates().other[1],
+            DeptPayRates().other[2],
+            DeptPayRates().other[3],
+            DeptPayRates().other[4],
+            DeptPayRates().other[5],
+            DeptPayRates().other[6],
+            DeptPayRates().other[7],
+            DeptPayRates().other[8],
+            DeptPayRates().other[9],
+            DeptPayRates().other[10]]
+        }
+        return Double(rates[min(numberOfYears, rates.count) - 1])
+    }
+}
+
+struct Employee: Identifiable, Equatable, Hashable {
+    static func ==(lhs: Employee, rhs: Employee) -> Bool {
+            return lhs.id == rhs.id
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    var id = UUID()
+    let name: String
+    var birthdate: Date
+    var hiredate: Date
+    var yearGroup: Int
+    var retirementAge: Int
+    var department: Department
+    var monthlyHoursWorked: Int
+    var planningToPromote1: Bool
+    var planningToPromote2: Bool
+    var planningToPromote3: Bool
+    var planningToPromote4: Bool
+    var regularPayRateIncreases: Bool
+    var regularPayRateIncreasePercentage: Int
+    var regularPayRateIncreaseYearInterval: Int
+
+    private(set) var employmentHistory: [Department]
+    
+    init(_ name: String,
+         birthdate: Date,
+         hiredate: Date,
+         yearGroup: Int,
+         retirementAge: Int,
+         department: Department = .other("Employee"),
+         monthlyHoursWorked: Int,
+         planningToPromote1: Bool,
+         planningToPromote2: Bool,
+         planningToPromote3: Bool,
+         planningToPromote4: Bool,
+         regularPayRateIncreases: Bool,
+         regularPayRateIncreasePercentage: Int,
+         regularPayRateIncreaseYearInterval: Int)
+    {
+        self.name = name
+        self.birthdate = birthdate
+        self.hiredate = hiredate
+        self.yearGroup = yearGroup
+        self.retirementAge = retirementAge
+        self.department = department
+        self.monthlyHoursWorked = monthlyHoursWorked
+        self.planningToPromote1 = planningToPromote1
+        self.planningToPromote2 = planningToPromote2
+        self.planningToPromote3 = planningToPromote3
+        self.planningToPromote4 = planningToPromote4
+        self.regularPayRateIncreases = regularPayRateIncreases
+        self.regularPayRateIncreasePercentage = regularPayRateIncreasePercentage
+        self.regularPayRateIncreaseYearInterval = regularPayRateIncreaseYearInterval
+        self.employmentHistory = []
+    }
+}
