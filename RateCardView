@@ -1,0 +1,24 @@
+import SwiftUI
+
+struct RateCardView: View {
+    var dept: DeptList
+    
+    var body: some View {
+        List {
+            ForEach(dept.rates) { rate in
+                HStack {
+                    Text("Year \(rate.year)")
+                    Spacer()
+                    Text("$ \(rate.hourlyRate, specifier: "%.2f")")
+                }
+            }
+        }
+        .navigationTitle(dept.deptName)
+    }
+}
+
+struct RateCardView_Previews: PreviewProvider {
+    static var previews: some View {
+        RateCardView(dept: DeptList.deptList[0])
+    }
+}
