@@ -1,0 +1,17 @@
+import SwiftUI
+
+struct InvestFormView: View {
+    @EnvironmentObject var vm: EmployeeViewModel
+    @Binding var tabSelection: Int
+
+    var body: some View {
+        Text("Placeholder")
+    }
+}
+
+struct InvestFormView_Previews: PreviewProvider {
+    static var previews: some View {
+        InvestFormView(tabSelection: .constant(2))
+            .environmentObject(EmployeeViewModel())
+    }
+}
