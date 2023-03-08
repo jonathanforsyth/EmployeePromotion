@@ -1,0 +1,74 @@
+import SwiftUI
+
+struct SampleData: Identifiable {
+    let yearGroup: Int
+    let age: Int
+    let department: String
+    let income: Int
+    let id = UUID()
+}
+
+private var employeeData: [SampleData] = [
+    SampleData(yearGroup: 1, age: 35, department: "Sales", income: 50000),
+    SampleData(yearGroup: 2, age: 36, department: "Sales", income: 55000),
+    SampleData(yearGroup: 3, age: 37, department: "Sales", income: 60000),
+    SampleData(yearGroup: 4, age: 38, department: "Sales", income: 65000),
+    SampleData(yearGroup: 5, age: 39, department: "Sales", income: 70000),
+    SampleData(yearGroup: 6, age: 40, department: "Management", income: 150000),
+    SampleData(yearGroup: 7, age: 41, department: "Management", income: 160000)
+]
+
+struct ResultsView: View {
+    @EnvironmentObject var vm: EmployeeViewModel
+    @Binding var tabSelection: Int
+
+    var body: some View {
+        ScrollView {
+            HStack{
+                Spacer()
+                VStack(alignment: .leading) {
+                    Text("Year")
+                        .font(.title3)
+                        .bold()
+                    ForEach(employeeData) { worker in
+                        Text("\(worker.yearGroup)")
+                    }
+                }
+                Spacer()
+                VStack(alignment: .leading) {
+                    Text("Age")
+                        .font(.title3)
+                        .bold()
+                    ForEach(employeeData) { worker in
+                        Text("\(worker.age)")
+                    }
+                }
+                Spacer()
+                VStack(alignment: .leading) {
+                    Text("Department")
+                        .font(.title3)
+                        .bold()
+                    ForEach(employeeData) { worker in
+                        Text("\(worker.department)")
+                    }
+                }
+                VStack(alignment: .leading) {
+                    Text("Income")
+                        .font(.title3)
+                        .bold()
+                    ForEach(employeeData) { worker in
+                        Text("$\(worker.income)")
+                    }
+                }
+                Spacer()
+            }
+        }
+    }
+}
+
+struct ResultsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ResultsView(tabSelection: .constant(3))
+            .environmentObject(EmployeeViewModel())
+    }
+}
