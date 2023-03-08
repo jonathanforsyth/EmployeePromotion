@@ -1,0 +1,148 @@
+import SwiftUI
+
+struct ProfileFormView: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    @Binding var tabSelection: Int
+    @EnvironmentObject var vm: EmployeeViewModel
+    let hoursWorked = 120...180
+    let currentDept = ["Sales","Management","Senior Management","Hospitality","Sanitation"]
+    let retirementAges = 55...65
+    
+    var dateClosedRange: ClosedRange<Date> {
+        let min = Calendar.current.date(byAdding: .day, value: -26000, to: Date())!
+        let max = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+        return min...max
+    }
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                Form {
+                    Section(header: Text("Personal Information:")
+                        .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                        .font(.body)
+                        .bold()) {
+                            DatePicker("Birthdate", selection: $vm.userData.birthdate, in: dateClosedRange, displayedComponents: .date)
+                            DatePicker("New Hire Date", selection: $vm.userData.hiredate, in: dateClosedRange, displayedComponents: .date)
+                            Picker("Age at Retirement", selection: $vm.userData.retirementAge) {
+                                ForEach(retirementAges, id: \.self) {
+                                    Text("\($0)")
+                                }
+                            }
+                        }
+                    Section(header: Text("Work Information:")
+                        .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                        .font(.body)
+                        .bold()) {
+                            Picker("Your Current Department", selection: $vm.userData.department) {
+                                ForEach(currentDept, id: \.self) {
+                                    Text ($0)
+                                }
+                            }
+                            Picker("Hours per Month", selection: $vm.userData.monthlyHoursWorked) {
+                                ForEach(hoursWorked, id: \.self) {
+                                    Text("\($0)")
+                                }}
+                            
+                        }
+                    Section(header: Text("Future Promotion")
+                        .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                        .font(.body)
+                        .bold()) {
+                            Toggle("Planning to change departments?", isOn: $vm.userData.planningToPromote1.animation())
+                                .tint(.blue)
+                            if vm.userData.planningToPromote1 == false {
+                            }
+                            else {
+                                Picker("Your Next Department", selection: $vm.userData.department) {
+                                    ForEach(currentDept, id: \.self) {
+                                        Text ($0)
+                                    }
+                                }
+                                DatePicker("Promotion Date", selection: $vm.userData.hiredate, in: dateClosedRange, displayedComponents: .date)
+                            }
+                        }
+                    if vm.userData.planningToPromote1 == false {
+                    }
+                    else {
+                        Section(header: Text("Second Promotion")
+                            .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                            .font(.body)
+                            .bold()) {
+                                Toggle("Planning to change departments?", isOn: $vm.userData.planningToPromote2.animation())
+                                    .tint(.blue)
+                                if vm.userData.planningToPromote2 == false {
+                                }
+                                else {
+                                    Picker("Your Next Department", selection: $vm.userData.department) {
+                                        ForEach(currentDept, id: \.self) {
+                                            Text ($0)
+                                        }
+                                    }
+                                    DatePicker("Promotion Date", selection: $vm.userData.hiredate, in: dateClosedRange, displayedComponents: .date)
+                                }
+                            }
+                    }
+                    if vm.userData.planningToPromote2 == false {
+                    }
+                    else {
+                        Section(header: Text("Third Promotion")
+                            .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                            .font(.body)
+                            .bold()) {
+                                Toggle("Planning to change departments?", isOn: $vm.userData.planningToPromote3.animation())
+                                    .tint(.blue)
+                                if vm.userData.planningToPromote3 == false {
+                                }
+                                else {
+                                    Picker("Your Next Department", selection: $vm.userData.department) {
+                                        ForEach(currentDept, id: \.self) {
+                                            Text ($0)
+                                        }
+                                    }
+                                    DatePicker("Promotion Date", selection: $vm.userData.hiredate, in: dateClosedRange, displayedComponents: .date)
+                                }
+                            }
+                    }
+                    if vm.userData.planningToPromote3 == false {
+                    }
+                    else {
+                        Section(header: Text("Fourth Promotion")
+                            .foregroundColor(colorScheme == .dark ? Color.white: Color.black)
+                            .font(.body)
+                            .bold()) {
+                                Toggle("Planning to change departments?", isOn: $vm.userData.planningToPromote4.animation())
+                                    .tint(.blue)
+                                if vm.userData.planningToPromote4 == false {
+                                }
+                                else {
+                                    Picker("Your Next Department", selection: $vm.userData.department) {
+                                        ForEach(currentDept, id: \.self) {
+                                            Text ($0)
+                                        }
+                                    }
+                                    DatePicker("Promotion Date", selection: $vm.userData.hiredate, in: dateClosedRange, displayedComponents: .date)
+                                }
+                            }
+                    }
+                }
+            }
+            .navigationTitle("Employee Info")
+            .toolbar {
+                NavigationLink(destination: PayRateView(
+                    depts: DeptList.deptList), label: {Text("Pay Charts")
+                    })
+            }
+        }
+        .accentColor(Color(.label))
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+
+struct ProfileFormView_Previews: PreviewProvider {
+    static var previews: some View {
+        ProfileFormView(tabSelection: .constant(1))
+            .environmentObject(EmployeeViewModel())
+    }
+}
