@@ -9,7 +9,7 @@ enum Calculations {
         raiseOnUnderflow: true,
         raiseOnDivideByZero: true
     )
-    static func computeMonthlyEarnings(hours hoursWorked: Int, atPayRate payRate: Int) -> Decimal {
+    static func computeMonthlyEarnings(hours hoursWorked: Double, atPayRate payRate: Double) -> Decimal {
         let base = Decimal(hoursWorked * payRate) as NSDecimalNumber
         return base.rounding(accordingToBehavior: pennyRoundingBehavior) as Decimal
     }
@@ -22,6 +22,7 @@ extension Array {
         }
     }
 }
+
 
 var birthdate = DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!
 var hiredate = DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!
@@ -52,7 +53,7 @@ class EmployeeViewModel: ObservableObject {
     Employee("Charlotte Grote", birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!, hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!, yearGroup: 1, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, planningToPromote1: true, planningToPromote2: false, planningToPromote3: false, planningToPromote4: false, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
         //give our employee some work history
         //months in Hospitality
-//            charlotte.work(months: firstDeptMonths)
+            charlotte.work(months: firstDeptMonths)
         //ohh, a promotion!
 //            charlotte.promote(to: .sales)
         //months in Sales
