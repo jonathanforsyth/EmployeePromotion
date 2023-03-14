@@ -23,47 +23,21 @@ extension Array {
     }
 }
 
-
-var birthdate = DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!
-var hiredate = DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!
-var promotion1date = DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!
-var firstDeptMonths: Int { Calendar.current.dateComponents([.month], from: hiredate, to: promotion1date).month! }
-var promotion2date = DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!
-var secondDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion1date, to: promotion2date).month! }
-var promotion3date = DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!
-var thirdDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion2date, to: promotion3date).month! }
-var retireAge = 65
-let retireDate = Calendar.current.date(byAdding: .year, value: retireAge, to: birthdate)!
-var fourthDeptMonths: Int { Calendar.current.dateComponents([.month], from: promotion3date, to: retireDate).month! }
+class EmployeeViewModel: ObservableObject {
+    
+    @Published var userData: Employee =
+    Employee("Charlotte Grote", birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!, hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!, yearGroup: 1, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, planningToPromote1: true, planningToPromote2: false, planningToPromote3: false, planningToPromote4: false, promotion1Date: DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!, promotion2Date: DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!, promotion3Date: DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
+    
+    var firstDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.hiredate, to: userData.promotion1Date).month! }
+    var secondDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion1Date, to: userData.promotion2Date).month! }
+    var thirdDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion2Date, to: userData.promotion3Date).month! }
+    let retireDate = Calendar.current.date(byAdding: .year, value: userData.retirementAge, to: userData.birthdate)!
+    var fourthDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion3Date, to: retireDate).month! }
+}
 
 extension Date {
     var age: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! }
     var yearGroup: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! + 1}
     var totalYearsRemaining: Int { Calendar.current.dateComponents([.year], from: self, to: retireDate).year! }
     var totalMonthsRemaining: Int { Calendar.current.dateComponents([.month], from: self, to: retireDate).month! }
-}
-//age of employee
-let age = birthdate.age
-//number of years employee has worked for the company
-let yearGroup = hiredate.yearGroup
-
-class EmployeeViewModel: ObservableObject {
-    
-    @Published var userData: Employee =
-    Employee("Charlotte Grote", birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!, hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!, yearGroup: 1, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, planningToPromote1: true, planningToPromote2: false, planningToPromote3: false, planningToPromote4: false, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
-        //give our employee some work history
-        //months in Hospitality
-            charlotte.work(months: firstDeptMonths)
-        //ohh, a promotion!
-//            charlotte.promote(to: .sales)
-        //months in Sales
-//            charlotte.work(months: secondDeptMonths)
-        //another promotion. way to go, Charlotte!
-//            charlotte.promote(to: .management)
-        //months in Management
-//            charlotte.work(months: thirdDeptMonths)
-        //another promotion. way to go, Charlotte!
-//            charlotte.promote(to: .seniorManagement)
-        //months in Senior Management
-//            charlotte.work(months: fourthDeptMonths)
 }
