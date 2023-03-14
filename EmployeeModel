@@ -1,3 +1,10 @@
+//
+//  Employee.swift
+//  WidgetPayChart
+//
+//  Created by Jonathan Forsyth on 3/3/23.
+//
+
 import Foundation
 
 struct DeptPayRates {
@@ -241,7 +248,7 @@ struct Employee: Identifiable, Equatable, Hashable {
     var yearGroup: Int
     var retirementAge: Int
     var department: Department
-    var monthlyHoursWorked: Int
+    var monthlyHoursWorked: Double
     var planningToPromote1: Bool
     var planningToPromote2: Bool
     var planningToPromote3: Bool
@@ -258,7 +265,7 @@ struct Employee: Identifiable, Equatable, Hashable {
          yearGroup: Int,
          retirementAge: Int,
          department: Department = .other("Employee"),
-         monthlyHoursWorked: Int,
+         monthlyHoursWorked: Double,
          planningToPromote1: Bool,
          planningToPromote2: Bool,
          planningToPromote3: Bool,
@@ -282,5 +289,58 @@ struct Employee: Identifiable, Equatable, Hashable {
         self.regularPayRateIncreasePercentage = regularPayRateIncreasePercentage
         self.regularPayRateIncreaseYearInterval = regularPayRateIncreaseYearInterval
         self.employmentHistory = []
+    }
+}
+extension Employee {
+    mutating func promote(to newDepartment: Department) {
+        department = newDepartment
+    }
+    mutating func work(months: Int) {
+        employmentHistory
+            .append(contentsOf: Array.init(repeating: department,
+                                           count: months))
+    }
+    mutating func work(years: Int) {
+        work(months: years * 12)
+    }
+    mutating func work(years: Int, months: Int) {
+        work(months: years * 12 + months)
+    }
+    func yearlyEarnings() -> [Decimal] {
+        let years = employmentHistory.chunked(into: 12)
+        var earnings: [Decimal] = []
+        for (index, months) in years.enumerated() {
+            let yearEarnings: Decimal = months.reduce(0) { runningTotal, dept in
+                let payRate = dept.payRate(forYearsWorked: index + 1)
+                let monthlyEarnings = Calculations.computeMonthlyEarnings(
+                    hours: monthlyHoursWorked,
+                    atPayRate: payRate
+                )
+                return runningTotal + monthlyEarnings
+            }
+            earnings.append(yearEarnings)
+        }
+        return earnings
+    }
+}
+extension Employee {
+    func yearlyDepartments() -> [String] {
+        let years = employmentHistory.chunked(into: 12)
+        let departments: [String] = years.map { months in
+            var seenDepts: Set<String> = []
+            return months.reduce(into: [String]()) { acc, dept in
+                if seenDepts.insert(dept.rawValue).inserted {
+                    acc.append(dept.rawValue)
+                }
+            }.joined(separator: ",")
+        }
+        return departments
+    }
+    func yearlyDepartmentsEarnings() -> [(String, Decimal)] {
+        let yearlyDepartments = yearlyDepartments()
+        let yearlyEarnings = yearlyEarnings()
+        let yearlyDepartmentsEarnings: [(departments: String, earnings: Decimal)] =
+        Array(zip(yearlyDepartments, yearlyEarnings))
+        return yearlyDepartmentsEarnings
     }
 }
