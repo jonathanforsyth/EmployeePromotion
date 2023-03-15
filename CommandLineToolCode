@@ -9,11 +9,12 @@ enum Calculations {
         raiseOnUnderflow: true,
         raiseOnDivideByZero: true
     )
-    static func computeMonthlyEarnings(hours hoursWorked: Int, atPayRate payRate: Int) -> Decimal {
+    static func computeMonthlyEarnings(hours hoursWorked: Double, atPayRate payRate: Double) -> Decimal {
         let base = Decimal(hoursWorked * payRate) as NSDecimalNumber
         return base.rounding(accordingToBehavior: pennyRoundingBehavior) as Decimal
     }
 }
+
 extension Array {
     func chunked(into size: Int) -> [[Element]] {
         return stride(from: 0, to: count, by: size).map {
@@ -43,8 +44,8 @@ enum Department: RawRepresentable {
         case .other(let dept): return dept
         }
     }
-    func payRate(forYearsWorked numberOfYears: Int) -> Int {
-        let rates: [Int]
+    func payRate(forYearsWorked numberOfYears: Int) -> Double {
+        let rates: [Double]
         switch self {
         case .sales: rates = [20,22,24,26,28,30,32,34,36,38,40]
         case .management: rates = [30,32,34,36,38,40,42,44,46,48,50]
@@ -55,13 +56,34 @@ enum Department: RawRepresentable {
     }
 }
 
-struct Employee {
+struct Employee: Identifiable, Equatable, Hashable {
+    static func ==(lhs: Employee, rhs: Employee) -> Bool {
+            return lhs.id == rhs.id
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    var id = UUID()
     let name: String
     var birthdate: Date
     var hiredate: Date
+    var yearGroup: Int
     var retirementAge: Int
     var department: Department
-    var monthlyHoursWorked: Int
+    var monthlyHoursWorked: Double
+    var planningToPromote1: Bool
+    var planningToPromote2: Bool
+    var planningToPromote3: Bool
+    var planningToPromote4: Bool
+    var promotion1Date: Date
+    var promotion2Date: Date
+    var promotion3Date: Date
+    var promotion4Date: Date
+    var secondDepartment: Department
+    var thirdDepartment: Department
+    var fourthDepartment: Department
+    var fifthDepartment: Department
     var regularPayRateIncreases: Bool
     var regularPayRateIncreasePercentage: Int
     var regularPayRateIncreaseYearInterval: Int
@@ -71,9 +93,22 @@ struct Employee {
     init(_ name: String,
          birthdate: Date,
          hiredate: Date,
+         yearGroup: Int,
          retirementAge: Int,
          department: Department = .other("Employee"),
-         monthlyHoursWorked: Int,
+         monthlyHoursWorked: Double,
+         planningToPromote1: Bool,
+         planningToPromote2: Bool,
+         planningToPromote3: Bool,
+         planningToPromote4: Bool,
+         promotion1Date: Date,
+         promotion2Date: Date,
+         promotion3Date: Date,
+         promotion4Date: Date,
+         secondDepartment: Department = .other("Employee"),
+         thirdDepartment: Department = .other("Employee"),
+         fourthDepartment: Department = .other("Employee"),
+         fifthDepartment: Department = .other("Employee"),
          regularPayRateIncreases: Bool,
          regularPayRateIncreasePercentage: Int,
          regularPayRateIncreaseYearInterval: Int)
@@ -81,9 +116,22 @@ struct Employee {
         self.name = name
         self.birthdate = birthdate
         self.hiredate = hiredate
+        self.yearGroup = yearGroup
         self.retirementAge = retirementAge
         self.department = department
         self.monthlyHoursWorked = monthlyHoursWorked
+        self.planningToPromote1 = planningToPromote1
+        self.planningToPromote2 = planningToPromote2
+        self.planningToPromote3 = planningToPromote3
+        self.planningToPromote4 = planningToPromote4
+        self.promotion1Date = promotion1Date
+        self.promotion2Date = promotion2Date
+        self.promotion3Date = promotion3Date
+        self.promotion4Date = promotion4Date
+        self.secondDepartment = secondDepartment
+        self.thirdDepartment = thirdDepartment
+        self.fourthDepartment = fourthDepartment
+        self.fifthDepartment = fifthDepartment
         self.regularPayRateIncreases = regularPayRateIncreases
         self.regularPayRateIncreasePercentage = regularPayRateIncreasePercentage
         self.regularPayRateIncreaseYearInterval = regularPayRateIncreaseYearInterval
@@ -176,20 +224,38 @@ func printYearlyDepartmentsAndEarnings(_ yearlyDeptsAndEarnings: [(departments: 
         print("")
     }
 }
-var charlotte = Employee("Charlotte Grote", birthdate: birthdate, hiredate: hiredate, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
+var charlotte = Employee("Charlotte Grote",
+                         birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!,
+                         hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!,
+                         yearGroup: 1,
+                         retirementAge: 65,
+                         department: .other("Sanitation"),
+                         monthlyHoursWorked: 160,
+                         planningToPromote1: true,
+                         planningToPromote2: true,
+                         planningToPromote3: true,
+                         planningToPromote4: true,
+                         promotion1Date: DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!,
+                         promotion2Date: DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!,
+                         promotion3Date: DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!,
+                         promotion4Date: DateComponents(calendar: .current, year: 2027, month: 12, day: 28).date!,
+                         secondDepartment: .other("Hospitality"),
+                         thirdDepartment: .other("Sales"),
+                         fourthDepartment: .other("Management"),
+                         fifthDepartment: .other("Senior Management"),
+                         regularPayRateIncreases: true,
+                         regularPayRateIncreasePercentage: 4,
+                         regularPayRateIncreaseYearInterval: 4)
+
 //give our employee some work history
-//months in Hospitality
 charlotte.work(months: firstDeptMonths)
 //ohh, a promotion!
 charlotte.promote(to: .sales)
-//months in Sales
 charlotte.work(months: secondDeptMonths)
 //another promotion. way to go, Charlotte!
 charlotte.promote(to: .management)
-//months in Management
 charlotte.work(months: thirdDeptMonths)
 //another promotion. way to go, Charlotte!
 charlotte.promote(to: .seniorManagement)
-//months in Senior Management
 charlotte.work(months: fourthDeptMonths)
 printYearlyDepartmentsAndEarnings(charlotte.yearlyDepartmentsEarnings())
