@@ -1,3 +1,6 @@
+
+//  EmployeePayChart
+
 import Foundation
 
 enum Calculations {
@@ -23,21 +26,45 @@ extension Array {
     }
 }
 
+extension Date {
+    var age: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! }
+    var yearGroup: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! + 1}
+    var totalYearsRemaining: Int { Calendar.current.dateComponents([.year], from: self, to: EmployeeViewModel().retireDate).year! }
+    var totalMonthsRemaining: Int { Calendar.current.dateComponents([.month], from: self, to: EmployeeViewModel().retireDate).month! }
+}
+
 class EmployeeViewModel: ObservableObject {
     
     @Published var userData: Employee =
-    Employee("Charlotte Grote", birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!, hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!, yearGroup: 1, retirementAge: 65, department: .other("Hospitality"), monthlyHoursWorked: 160, planningToPromote1: true, planningToPromote2: false, planningToPromote3: false, planningToPromote4: false, promotion1Date: DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!, promotion2Date: DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!, promotion3Date: DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!, regularPayRateIncreases: true, regularPayRateIncreasePercentage: 4, regularPayRateIncreaseYearInterval: 4)
+    Employee("Charlotte Grote",
+             birthdate: DateComponents(calendar: .current, year: 1965, month: 7, day: 20).date!,
+             hiredate: DateComponents(calendar: .current, year: 2021, month: 12, day: 28).date!,
+             yearGroup: 1,
+             retirementAge: 65,
+             department: .other("Sanitation"),
+             monthlyHoursWorked: 160,
+             planningToPromote1: true,
+             planningToPromote2: true,
+             planningToPromote3: true,
+             planningToPromote4: true,
+             promotion1Date: DateComponents(calendar: .current, year: 2023, month: 12, day: 28).date!,
+             promotion2Date: DateComponents(calendar: .current, year: 2025, month: 6, day: 28).date!,
+             promotion3Date: DateComponents(calendar: .current, year: 2026, month: 12, day: 28).date!,
+             promotion4Date: DateComponents(calendar: .current, year: 2027, month: 12, day: 28).date!,
+             secondDepartment: .other("Hospitality"),
+             thirdDepartment: .other("Sales"),
+             fourthDepartment: .other("Management"),
+             fifthDepartment: .other("Senior Management"),
+             regularPayRateIncreases: true,
+             regularPayRateIncreasePercentage: 4,
+             regularPayRateIncreaseYearInterval: 4)
     
     var firstDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.hiredate, to: userData.promotion1Date).month! }
     var secondDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion1Date, to: userData.promotion2Date).month! }
     var thirdDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion2Date, to: userData.promotion3Date).month! }
-    let retireDate = Calendar.current.date(byAdding: .year, value: userData.retirementAge, to: userData.birthdate)!
+    var retireDate: Date { Calendar.current.date(byAdding: .year, value: userData.retirementAge, to: userData.birthdate)! }
     var fourthDeptMonths: Int { Calendar.current.dateComponents([.month], from: userData.promotion3Date, to: retireDate).month! }
+    
 }
 
-extension Date {
-    var age: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! }
-    var yearGroup: Int { Calendar.current.dateComponents([.year], from: self, to: Date()).year! + 1}
-    var totalYearsRemaining: Int { Calendar.current.dateComponents([.year], from: self, to: retireDate).year! }
-    var totalMonthsRemaining: Int { Calendar.current.dateComponents([.month], from: self, to: retireDate).month! }
-}
+
