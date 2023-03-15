@@ -166,8 +166,10 @@ let age = birthdate.age
 //number of years employee has worked for the company
 let yearGroup = hiredate.yearGroup
 
+
 func printYearlyDepartmentsAndEarnings(_ yearlyDeptsAndEarnings: [(departments: String, earnings: Decimal)]) {
     for (year, deptsAndEarnings) in yearlyDeptsAndEarnings.enumerated() {
+        print("Years since hired: \(year + yearGroup + 1)")
         print("Department(s) for Year \(year + yearGroup + 1): \(deptsAndEarnings.departments)")
         print("Earnings for Year \(year + yearGroup + 1): \(deptsAndEarnings.earnings)")
         print("Age: \(year + age)")
