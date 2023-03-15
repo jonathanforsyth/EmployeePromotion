@@ -1,3 +1,4 @@
+
 import Foundation
 
 struct DeptPayRates {
@@ -110,6 +111,29 @@ extension DeptList {
                     YearlyRates(year: 11, hourlyRate:
                                     DeptPayRates().seniorManagement[10])], subDept: [])]),
     DeptList(deptName: "Hospitality", rates: [
+        YearlyRates(year: 1, hourlyRate:
+            DeptPayRates().other[0]),
+        YearlyRates(year: 2, hourlyRate:
+            DeptPayRates().other[1]),
+        YearlyRates(year: 3, hourlyRate:
+            DeptPayRates().other[2]),
+        YearlyRates(year: 4, hourlyRate:
+            DeptPayRates().other[3]),
+        YearlyRates(year: 5, hourlyRate:
+            DeptPayRates().other[4]),
+        YearlyRates(year: 6, hourlyRate:
+            DeptPayRates().other[5]),
+        YearlyRates(year: 7, hourlyRate:
+            DeptPayRates().other[6]),
+        YearlyRates(year: 8, hourlyRate:
+            DeptPayRates().other[7]),
+        YearlyRates(year: 9, hourlyRate:
+            DeptPayRates().other[8]),
+        YearlyRates(year: 10, hourlyRate:
+            DeptPayRates().other[9]),
+        YearlyRates(year: 11, hourlyRate:
+            DeptPayRates().other[10])], subDept: []),
+    DeptList(deptName: "Sanitation", rates: [
         YearlyRates(year: 1, hourlyRate:
             DeptPayRates().other[0]),
         YearlyRates(year: 2, hourlyRate:
@@ -246,6 +270,14 @@ struct Employee: Identifiable, Equatable, Hashable {
     var planningToPromote2: Bool
     var planningToPromote3: Bool
     var planningToPromote4: Bool
+    var promotion1Date: Date
+    var promotion2Date: Date
+    var promotion3Date: Date
+    var promotion4Date: Date
+    var secondDepartment: Department
+    var thirdDepartment: Department
+    var fourthDepartment: Department
+    var fifthDepartment: Department
     var regularPayRateIncreases: Bool
     var regularPayRateIncreasePercentage: Int
     var regularPayRateIncreaseYearInterval: Int
@@ -263,6 +295,14 @@ struct Employee: Identifiable, Equatable, Hashable {
          planningToPromote2: Bool,
          planningToPromote3: Bool,
          planningToPromote4: Bool,
+         promotion1Date: Date,
+         promotion2Date: Date,
+         promotion3Date: Date,
+         promotion4Date: Date,
+         secondDepartment: Department = .other("Employee"),
+         thirdDepartment: Department = .other("Employee"),
+         fourthDepartment: Department = .other("Employee"),
+         fifthDepartment: Department = .other("Employee"),
          regularPayRateIncreases: Bool,
          regularPayRateIncreasePercentage: Int,
          regularPayRateIncreaseYearInterval: Int)
@@ -278,6 +318,14 @@ struct Employee: Identifiable, Equatable, Hashable {
         self.planningToPromote2 = planningToPromote2
         self.planningToPromote3 = planningToPromote3
         self.planningToPromote4 = planningToPromote4
+        self.promotion1Date = promotion1Date
+        self.promotion2Date = promotion2Date
+        self.promotion3Date = promotion3Date
+        self.promotion4Date = promotion4Date
+        self.secondDepartment = secondDepartment
+        self.thirdDepartment = thirdDepartment
+        self.fourthDepartment = fourthDepartment
+        self.fifthDepartment = fifthDepartment
         self.regularPayRateIncreases = regularPayRateIncreases
         self.regularPayRateIncreasePercentage = regularPayRateIncreasePercentage
         self.regularPayRateIncreaseYearInterval = regularPayRateIncreaseYearInterval
